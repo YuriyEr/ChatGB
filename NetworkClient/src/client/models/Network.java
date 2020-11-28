@@ -12,6 +12,7 @@ public class Network {
     private static final String AUTH_CMD_PREFIX = "/auth";
     private static final String AUTHOK_CMD_PREFIX = "/authok";
     private static final String AUTHERR_CMD_PREFIX = "/autherr";
+    public static final String MESSAGE_FOR_USER = "/w";
 
     private static final String SERVER_ADRESS = "localhost";
     private static final int SERVER_PORT = 8189;
