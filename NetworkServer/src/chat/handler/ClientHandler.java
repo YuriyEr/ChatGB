@@ -15,6 +15,7 @@ public class ClientHandler {
     private static final String AUTH_CMD_PREFIX = "/auth";
     private static final String AUTHOK_CMD_PREFIX = "/authok";
     private static final String AUTHERR_CMD_PREFIX = "/autherr";
+    public static final String MESSAGE_FOR_USER = "/w";
 
     private final MyServer myServer;
     private final Socket clientSocket;
@@ -65,8 +66,7 @@ public class ClientHandler {
                 } else {
                     out.writeUTF(AUTHERR_CMD_PREFIX + " Логин или пароль не соответствуют действительности");
                 }
-            }
-            else {
+            } else {
                 out.writeUTF(AUTHERR_CMD_PREFIX + " Ошибка авторизации");
             }
         }
@@ -76,11 +76,14 @@ public class ClientHandler {
         while (true) {
             String message = io.readUTF();
             System.out.println("message | " + clientUsername + ": " + message);
-            if (message.startsWith("/end")) {
-                return;
+            if (message.startsWith(MESSAGE_FOR_USER)) {
+                myServer.messageForUser(message);
             }
-
-            myServer.broadcastMessage(clientUsername + ": " + message, this);
+            else if (message.startsWith("/end")) {
+                return;
+            } else {
+                myServer.broadcastMessage(clientUsername + ": " + message, this);
+            }
         }
     }
 
@@ -88,7 +91,7 @@ public class ClientHandler {
         return clientUsername;
     }
 
-    public void sendMessage(String s, String senderName) throws IOException {
-        out.writeUTF( s);
+    public void sendMessage(String s, String clientUsername) throws IOException {
+        out.writeUTF(s);
     }
 }

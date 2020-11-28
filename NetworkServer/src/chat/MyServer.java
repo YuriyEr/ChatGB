@@ -1,5 +1,6 @@
 package chat;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -13,11 +14,16 @@ public class MyServer {
 
     private final ServerSocket serverSocket;
     private final AuthService authService;
+
     private final List<ClientHandler> clients = new ArrayList<>();
 
     public MyServer(int port) throws IOException {
         this.serverSocket = new ServerSocket(port);
         this.authService = new BaseAuthService();
+    }
+
+    public List<ClientHandler> getClients() {
+        return clients;
     }
 
 
@@ -77,4 +83,17 @@ public class MyServer {
             client.sendMessage(s, sender.getClientUsername());
         }
     }
+
+    public void messageForUser(String s) throws IOException {
+        String[] parts = s.split("\\s+", 3);
+        String name = parts[1];
+        String message = parts[2];
+        for (ClientHandler client: clients) {
+            if (client.getClientUsername().equals(name)) {
+                client.sendMessage(message, client.getClientUsername());
+            }
+        }
+
+    }
+
 }
